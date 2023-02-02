@@ -2,7 +2,6 @@ const {Hero, Superpower} = require('../models/index');
 const NotFoundError = require('../errors/NotFoundError');
 
 
-
 module.exports.createHero = async (req, res, next) => {
     try {
         const {body} = req;
@@ -53,10 +52,16 @@ module.exports.updateHero = async (req, res, next) => {
     }
 };
 
+
+
 module.exports.deleteHero = async (req, res, next) => {
     try {
         const {params: {heroId}} = req;
-        const deletedHero = await Hero.destroy({
+        const hero = await Hero.findByPk(heroId);
+        if (!hero){
+            throw new NotFoundError('Hero not found');
+        }
+        const deletedHero = await hero.destroy({
             where: {
                 id: heroId
             }
@@ -84,6 +89,21 @@ module.exports.getHerosWithSuperpowers = async (req, res, next) => {
         next(error);
     }
 }
+
+module.exports.createHeroImage = async(req, res, next) => {
+       try {
+       const {params: {heroId}, file: {filename}} = req;
+           const [rowCount, [updatedHero]] = await Hero.update({imagePath: filename}, {
+               where: {
+                   id: heroId
+               },
+               returning: true
+           });
+           res.status(200).send(updatedHero);
+       }catch(error) {
+           next(error);
+       }
+   }
 
 
 
