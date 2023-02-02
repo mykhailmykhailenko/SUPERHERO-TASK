@@ -5,7 +5,7 @@ const heroRouter = Router();
 
 heroRouter.post('/', HeroController.createHero);
 heroRouter.get('/', pagination, HeroController.getAllHeroes);
-heroRouter.get('/:heroId', HeroController.getOneHero);
+heroRouter.get('/:heroId', HeroController.getHerosWithSuperpowers);
 heroRouter.put('/:heroId', HeroController.updateHero);
 heroRouter.delete('/:heroId', HeroController.deleteHero);
 

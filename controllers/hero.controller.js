@@ -1,5 +1,6 @@
-const {Hero} = require('../models/index');
+const {Hero, Superpower} = require('../models/index');
 const NotFoundError = require('../errors/NotFoundError');
+
 
 
 module.exports.createHero = async (req, res, next) => {
@@ -69,6 +70,20 @@ module.exports.deleteHero = async (req, res, next) => {
         next(error);
     }
 };
+
+module.exports.getHerosWithSuperpowers = async (req, res, next) => {
+    try {
+        const {params: {heroId}} = req;
+        const heroWithSuperpowers = await Hero.findByPk(heroId, {
+            include: {
+                model: Superpower
+            }
+        })
+        res.status(200).send(heroWithSuperpowers);
+    } catch(error) {
+        next(error);
+    }
+}
 
 
 
