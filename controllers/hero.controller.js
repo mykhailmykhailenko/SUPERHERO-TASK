@@ -1,4 +1,6 @@
 const {Hero} = require('../models/index');
+const NotFoundError = require('../errors/NotFoundError');
+
 
 module.exports.createHero = async (req, res, next) => {
     try {
@@ -10,10 +12,25 @@ module.exports.createHero = async (req, res, next) => {
     }
 };
 
+module.exports.getOneHero = async (req, res, next) => {
+    try {
+        const {params: {heroId}} = req;
+        const hero = await Hero.findByPk(heroId);
+        if (!hero){
+            throw new NotFoundError('Hero not found');
+        }
+        res.status(200).send(hero);
+    } catch(error) {
+        next(error);
+    }
+}
 
 module.exports.getAllHeroes = async (req, res, next) => {
     try{
-        const allHeroes = await Hero.findAll();
+        const {pagination} = req;
+        const allHeroes = await Hero.findAll({
+           ...pagination
+        });
         res.status(200).send(allHeroes);
     } catch(error) {
         next(error);

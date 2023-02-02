@@ -1,4 +1,5 @@
 const {Hero} = require('../models');
+const NotFoundError = require('../errors/NotFoundError');
  
 module.exports.getHeroInstance = async (req, res, next) => {
     try {
@@ -8,7 +9,7 @@ module.exports.getHeroInstance = async (req, res, next) => {
             req.heroInstance = hero;
             next()
         } else {
-            res.status(404).send({error: 'No such hero'});
+            throw new NotFoundError ('Hero not found');
         }
     } catch(error) {
         next(error)
